@@ -21,19 +21,39 @@ export default function SignInPage() {
     setPassword(event.target.value);
   }
 
-  async function handleSubmit(event) {
+  async function createAccount(event) {
     event.preventDefault();
     const response = await fetch(`http://127.0.0.1:5000/signup/${username}/${password}`, {
-      mode: 'no-cors',
-      credentials: 'include',
+      // credentials: 'include',
+      mode: 'cors',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ username, password }),
-    }).then((response) => {
-      console.log(response);
     });
+    setUsername("");
+    setPassword("");
+    const resp = await response.json();
+    console.log(resp);
+    alert(resp["msg"]);
+  }
+
+  async function login(event) {
+    event.preventDefault();
+    const response = await fetch(`http://127.0.0.1:5000/login/${username}/${password}`, {
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+    setUsername("");
+    setPassword("");
+    const resp = await response.json();
+    console.log(resp);
+    alert(resp["msg"]);
   }
 
   return (
@@ -62,13 +82,14 @@ export default function SignInPage() {
                   id="password"
                   label="Password"
                   name="password"
+                  type={"password"}
                   value={password}
                   onChange={handlePasswordChange}
                 />
-          <Button variant="contained" color="primary" href="/projects">
+          <Button variant="contained" color="primary" onClick={login}>
           Sign In
         </Button>
-        <Button variant="text" color="primary" onClick= {handleSubmit}>
+        <Button variant="text" color="primary" onClick= {createAccount}>
           Create New Account
         </Button>
         </Box>

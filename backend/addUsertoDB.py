@@ -14,8 +14,6 @@ cors = CORS(app, resources={
     }
 })
 #CORS(app)
-app.config['MONGO_URI'] = "mongodb+srv://rayantejani:abcd@cluster0.quex5af.mongodb.net/?retryWrites=true&w=majority"
-cli = MongoClient(app.config['MONGO_URI'])
 
 
 ca = certifi.where()
@@ -40,14 +38,20 @@ def index():
 
 
 @app.route('/signup/<username>/<password>', methods=['POST'])
-@cross_origin()
 def addNewUser(username, password):
     
 
-    client = MongoClient("mongodb+srv://rayantejani:abcd@cluster0.quex5af.mongodb.net/?retryWrites=true&w=majority", tlsCAfile=ca)
+    client = MongoClient("paste team DB link here", tlsCAfile=ca)
 
     db = client["Users"]
-    collection_name = db.create_collection(username)
+    collection_name = db['users']
+
+    checkExistingUser = collection_name.find_one({"userId": username})
+
+    if checkExistingUser:
+        response = jsonify({'msg': 'User Already Exists'})
+        response.headers.set('Access-Control-Allow-Origin', '*')
+        return response
 
     encryptedPassword = cipher.encrypt(password, 3, 1)
 
@@ -59,9 +63,27 @@ def addNewUser(username, password):
     collection_name.insert_one(userDoc)
     client.close()
 
-    return {'message': 'User created successfully'}
+    response = jsonify({'msg': 'User Created'})
+    response.headers.set('Access-Control-Allow-Origin', '*')
+    return response
 
-    
+@app.route('/login/<username>/<password>', methods=['POST'])
+def login(username, password):
+    client = MongoClient("paste team DB link here", tlsCAfile=ca)
+
+    db = client["Users"]
+    collection_name = db['users']
+
+    checkUserPassword = collection_name.find_one({"userId": username, "password": cipher.encrypt(password, 3, 1)})
+
+    if not checkUserPassword:
+        response = jsonify({'msg': 'Invalid Username or Password'})
+        response.headers.set('Access-Control-Allow-Origin', '*')
+        return response
+    else:
+        response = jsonify({'msg': 'Login Successful'})
+        response.headers.set('Access-Control-Allow-Origin', '*')
+        return response
 
 if __name__ == '__main__':
     app.run(debug=True, port = 5000)
