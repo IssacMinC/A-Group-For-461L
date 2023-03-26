@@ -6,12 +6,18 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import ProjectMgmtPage from "./ProjectMgmtPage";
 
+import { useNavigate } from 'react-router-dom';
+
+
+
 export default function SignInPage() {
 
   
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  
+  const navigate = useNavigate();
+  
   
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -54,6 +60,10 @@ export default function SignInPage() {
     const resp = await response.json();
     console.log(resp);
     alert(resp["msg"]);
+    
+    if (resp["msg"] === 'Login Successful') {
+      navigate('/projects');
+    }
   }
 
   return (
