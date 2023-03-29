@@ -13,7 +13,6 @@ cors = CORS(app, resources={
         "supports_credentials": True
     }
 })
-#CORS(app)
 
 
 ca = certifi.where()
@@ -22,29 +21,15 @@ ca = certifi.where()
 def index():
     return "Hello, World!"
 
-# @app.route('/signup', methods=['GET'])
-# def queryHWSet1Availability():
-#     client = MongoClient("mongodb+srv://asamant:EE461LSp23@cluster0.oovet.mongodb.net/?retryWrites=true&w=majority", tlsCAfile=ca)
-
-#     db = client.HardwareSet
-
-#     set1 = db.HWSet1
-
-#     query = {"Description": "Hardware Set 1"}
-#     x = set1.find_one(query)
-#     avail = x["Availability"]
-#     client.close()
-#     return str(avail)
-
 
 @app.route('/signup/<username>/<password>', methods=['POST'])
 def addNewUser(username, password):
     
 
-    client = MongoClient("paste team DB link here", tlsCAfile=ca)
+    client = MongoClient("paste latest DB link here", tlsCAfile=ca)
 
-    db = client["Users"]
-    collection_name = db['users']
+    db = client["User"]
+    collection_name = db["Users"]
 
     checkExistingUser = collection_name.find_one({"userId": username})
 
@@ -54,10 +39,13 @@ def addNewUser(username, password):
         return response
 
     encryptedPassword = cipher.encrypt(password, 3, 1)
+    
+    projectArray = []
 
     userDoc = {
-        "userId": username,
-        "password": encryptedPassword
+        "UserId": username,
+        "Password": encryptedPassword,
+        "ProjectID": projectArray
     }
 
     collection_name.insert_one(userDoc)
@@ -69,12 +57,12 @@ def addNewUser(username, password):
 
 @app.route('/login/<username>/<password>', methods=['POST'])
 def login(username, password):
-    client = MongoClient("paste team DB link here", tlsCAfile=ca)
+    client = MongoClient("paste latest DB link here", tlsCAfile=ca)
 
-    db = client["Users"]
-    collection_name = db['users']
+    db = client["User"]
+    collection_name = db["Users"]
 
-    checkUserPassword = collection_name.find_one({"userId": username, "password": cipher.encrypt(password, 3, 1)})
+    checkUserPassword = collection_name.find_one({"UserId": username, "Password": cipher.encrypt(password, 3, 1)}, {"ProjectID": 0})
 
     if not checkUserPassword:
         response = jsonify({'msg': 'Invalid Username or Password'})
