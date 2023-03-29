@@ -134,3 +134,6 @@ def checkOut(projectID, hwSet, qty):
         colProject.update_one({"projectID":projectID},{"$set": {hwSet:(hwSetQty+qty)}})
         client.close()
         return {"msg": "check out sucessful"}
+
+if __name__ == '__main__':
+    app.run(debug=True, port = 5000)
