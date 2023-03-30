@@ -1,0 +1,21 @@
+.tf{
+    background-color:rgb(251, 251, 251);
+    border-radius:5px;
+}
+.space-text{
+    padding-left:10px;
+    padding-right:10px;
+}
+.space-cap{
+    width:150px;
+    padding-left:10px;
+    padding-right:10px;
+    display:inline-block;
+}
+.space-small{
+    padding-left:5px;
+    padding-right:5px;
+}
+.HWsep{
+    padding-bottom:10px;
+}
