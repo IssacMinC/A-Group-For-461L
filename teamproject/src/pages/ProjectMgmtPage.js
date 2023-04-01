@@ -123,6 +123,7 @@ export default function ProjectMgmtPage() {
       name:projName
     }
     setList([...projList, newProps])
+    setName("")
   }
 
   const addProjToList = () =>{
@@ -130,6 +131,7 @@ export default function ProjectMgmtPage() {
       name:joinProjName
     }
     setList([...projList, newProps])
+    setJoinProjName("")
   }
 
   const updateName = (e) =>{
