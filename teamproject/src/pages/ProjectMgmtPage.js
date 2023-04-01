@@ -18,11 +18,9 @@ export default function ProjectMgmtPage() {
   }
 
 
-  const projectProps1 = {
-    name:"Project 1",
-  }
+  
 
-  const [projList, setList] = useState([projectProps1])
+  const [projList, setList] = useState([])
   const [projName, setName] = useState("")
   const [joinProjName, setJoinProjName] = useState("")
 
@@ -120,7 +118,9 @@ export default function ProjectMgmtPage() {
 
   const createNew = () =>{
     const newProps = {
-      name:projName
+      name:projName,
+      HWSet1: 0,
+      HWSet2: 0
     }
     setList([...projList, newProps])
     setName("")
@@ -128,9 +128,19 @@ export default function ProjectMgmtPage() {
 
   const addProjToList = () =>{
     const newProps = {
-      name:joinProjName
+      name:joinProjName,
+      HWSet1: 0,
+      HWSet2: 0
     }
-    setList([...projList, newProps])
+    let isInList = false
+    for (let i = 0; i < projList.length; i++){
+      if (projList[i].name === joinProjName){
+        isInList = true
+      }
+    }
+    if (!isInList){
+      setList([...projList, newProps])
+    }
     setJoinProjName("")
   }
 
@@ -192,7 +202,7 @@ export default function ProjectMgmtPage() {
           flexDirection: 'row',
           gap:4, 
           marginTop:3}}>
-          <Projects projectList={projList} {...projectsProps}/>
+          <Projects projectList={projList} {...projectsProps} getAva1 = {getAva1} getAva2={getAva2}/>
           <Box sx={{display: 'flex',
           flexDirection: 'column'}}> 
             <TextField

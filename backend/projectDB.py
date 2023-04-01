@@ -157,7 +157,7 @@ def getAvail(hwSet):
     db = client["HardwareSet"]
     col = db["Hardware"]
     dicti = col.find_one({"Name":hwSet},{"_id":0})
-    avail = dicti["Capacity"]
+    avail = dicti["Availability"]
     client.close()
     return {"availability": int(avail)}
 
@@ -172,15 +172,15 @@ def checkIn(projectID, hwSet, qty):
     colProject = dbProject["Projects"]
     dictProject = colProject.find_one({"projectID":projectID},{"_id":0})
     hwSetQty = dictProject[hwSet]
-    if qty < 0:
+    if int(qty) < 0:
         client.close()
         return {"msg": "error: qty has to be greater than 0"}
-    elif hwSetQty < qty:
+    elif hwSetQty < int(qty):
         client.close()
         return {"msg": "error: qty is bigger than what is checked out"}
     else:
-        col.update_one({"Name":hwSet},{"$set": {"Availability":(avail+qty)}})
-        colProject.update_one({"projectID":projectID},{"$set": {hwSet:(hwSetQty-qty)}})
+        col.update_one({"Name":hwSet},{"$set": {"Availability":(int(avail)+int(qty))}})
+        colProject.update_one({"projectID":projectID},{"$set": {hwSet:(hwSetQty-int(qty))}})
         client.close()
         return {"msg": "check in sucessful"}
 
@@ -195,15 +195,15 @@ def checkOut(projectID, hwSet, qty):
     colProject = dbProject["Projects"]
     dictProject = colProject.find_one({"projectID":projectID},{"_id":0})
     hwSetQty = dictProject[hwSet]
-    if qty < 0:
+    if int(qty) < 0:
         client.close()
         return {"msg": "error: qty has to be greater than 0"}
-    elif qty > avail:
+    elif int(qty) > int(avail):
         client.close()
         return {"msg": "error: requested more qty than available"}
     else:
-        col.update_one({"Name":hwSet},{"$set": {"Availability":(avail-qty)}})
-        colProject.update_one({"projectID":projectID},{"$set": {hwSet:(hwSetQty+qty)}})
+        col.update_one({"Name":hwSet},{"$set": {"Availability":(int(avail)-int(qty))}})
+        colProject.update_one({"projectID":projectID},{"$set": {hwSet:(hwSetQty+int(qty))}})
         client.close()
         return {"msg": "check out sucessful"}
 

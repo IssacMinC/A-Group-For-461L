@@ -13,18 +13,46 @@ function HWSet(props){
         setTextVal(num)
     }
 
-    function checkIn(){
+    
 
-    }
+    async function checkIn(){
+        const response = await fetch(`http://127.0.0.1:5000/projectCheckIn/${props.projName}/${props.hwset}/${textVal}`, {
+          mode: 'cors',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }, 
+        });
+        const data = await response.json()
+        const message = data["msg"]
+        if (message === "check in sucessful"){
+            props.getAva()
+            props.getHW()
+        }
+        alert(message)
+      }
 
-    function checkOut(){
-
-    }
+    async function checkOut(){
+        const response = await fetch(`http://127.0.0.1:5000/projectCheckOut/${props.projName}/${props.hwset}/${textVal}`, {
+          mode: 'cors',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }, 
+        });
+        const data = await response.json()
+        const message = data["msg"]
+        if (message === "check out sucessful"){
+            props.getAva()
+            props.getHW()
+        }
+        alert(message)
+      }
 
     return(
         <div className={'HWsep ' + props.hwset}>
                 <div className='space-cap'>
-                    {props.hwset}: {ava}/{props.max}  
+                    {props.hwset}: {props.ava}/{props.max}  
                 </div> 
                 <span className='space-text'>
                     <TextField onChange={textOnChange} className='tf' variant='standard' size='small' placeholder='Enter qty'/>
