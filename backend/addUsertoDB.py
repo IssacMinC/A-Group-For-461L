@@ -2,8 +2,8 @@ from pymongo import MongoClient
 import certifi
 import cipher
 
-from flask import Flask, redirect, url_for, request, render_template, jsonify
-from flask_cors import CORS, cross_origin
+from flask import Flask, jsonify
+from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app, resources={
     r"/*": {
@@ -26,7 +26,7 @@ def index():
 def addNewUser(username, password):
     
 
-    client = MongoClient("paste latest DB link here", tlsCAfile=ca)
+    client = MongoClient("mongodb+srv://test:2cinKpO1locYEb76@cluster1.wjept6s.mongodb.net/?retryWrites=true&w=majority", tlsCAfile=ca)
 
     db = client["User"]
     collection_name = db["Users"]
@@ -57,13 +57,14 @@ def addNewUser(username, password):
 
 @app.route('/login/<username>/<password>', methods=['POST'])
 def login(username, password):
-    client = MongoClient("paste latest DB link here", tlsCAfile=ca)
+    client = MongoClient("mongodb+srv://test:2cinKpO1locYEb76@cluster1.wjept6s.mongodb.net/?retryWrites=true&w=majority", tlsCAfile=ca)
 
     db = client["User"]
     collection_name = db["Users"]
 
     checkUserPassword = collection_name.find_one({"UserId": username, "Password": cipher.encrypt(password, 3, 1)}, {"ProjectID": 0})
-
+    client.close()
+    
     if not checkUserPassword:
         response = jsonify({'msg': 'Invalid Username or Password'})
         response.headers.set('Access-Control-Allow-Origin', '*')
