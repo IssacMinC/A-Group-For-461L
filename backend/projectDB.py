@@ -89,6 +89,19 @@ def createProject(projectID):
         client.close()
         return {"msg": "already existing project"}
 
+@app.route('/joinProject/<projectID>', methods=['GET'])
+def joinProject(projectID):
+    client = MongoClient(clientLink, tlsCAfile=ca)
+    db = client["Project"]
+    col = db["Projects"]
+    check = col.find_one({"projectID":projectID})
+    if check == None:
+        client.close()
+        return {"msg": "project not found"}
+    else:
+        client.close()
+        return {"msg": "joined " + projectID }
+
 # @app.route('/deleteProject/<projectID>', methods=['POST'])
 # def deleteProject(projectID):
 #     client = MongoClient(clientLink, tlsCAfile=ca)

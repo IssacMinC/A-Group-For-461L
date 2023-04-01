@@ -24,6 +24,7 @@ export default function ProjectMgmtPage() {
 
   const [projList, setList] = useState([projectProps1])
   const [projName, setName] = useState("")
+  const [joinProjName, setJoinProjName] = useState("")
 
   const [cap1, setCap1] = useState(0)
   const [cap2, setCap2] = useState(0)
@@ -94,6 +95,22 @@ export default function ProjectMgmtPage() {
     alert(message)
   }
 
+  async function joinProject(){
+    const response = await fetch(`http://127.0.0.1:5000/joinProject/${joinProjName}`, {
+      mode: 'cors',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }, 
+    });
+    const data = await response.json()
+    const message = data["msg"]
+    if (message === "joined "+ joinProjName){
+      addProjToList()
+    }
+    alert(message)
+  }
+
   const projectsProps = {
     cap1:cap1,
     cap2:cap2,
@@ -108,8 +125,19 @@ export default function ProjectMgmtPage() {
     setList([...projList, newProps])
   }
 
+  const addProjToList = () =>{
+    const newProps = {
+      name:joinProjName
+    }
+    setList([...projList, newProps])
+  }
+
   const updateName = (e) =>{
     setName(e.target.value)
+  }
+
+  const updateJoinProjName = (e) =>{
+    setJoinProjName(e.target.value)
   }
 
 
@@ -163,7 +191,8 @@ export default function ProjectMgmtPage() {
           gap:4, 
           marginTop:3}}>
           <Projects projectList={projList} {...projectsProps}/>
-          <Box> 
+          <Box sx={{display: 'flex',
+          flexDirection: 'column'}}> 
             <TextField
                   value={projName}
                   onChange={updateName}
@@ -173,8 +202,19 @@ export default function ProjectMgmtPage() {
             <Button variant="contained" color="primary" onClick={createProject}>
               Create New Project
             </Button>
+            <TextField
+                  value={joinProjName}
+                  onChange={updateJoinProjName}
+                  margin="normal"
+                  required
+                  fullWidth/>
+            <Button variant="contained" color="primary" onClick={joinProject}>
+              Join Project
+            </Button>
+            
           </Box>
         </Box>
+        
         
 
     </Container>
