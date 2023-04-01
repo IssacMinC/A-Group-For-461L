@@ -10,9 +10,8 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-export default function SignInPage() {
+export default function SignInPage({setUser}) {
 
-  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   
@@ -63,6 +62,7 @@ export default function SignInPage() {
     
     if (resp["msg"] === 'Login Successful') {
       navigate('/projects');
+      setUser(username)
     }
   }
 

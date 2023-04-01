@@ -9,16 +9,13 @@ import TextField from '@mui/material/TextField';
 
 import Projects from "../components/projects/projects";
 
-export default function ProjectMgmtPage() {
+export default function ProjectMgmtPage({user}) {
 
   const navigate = useNavigate();
 
   const logOut = () => {
     navigate("/");
   }
-
-
-  
 
   const [projList, setList] = useState([])
   const [projName, setName] = useState("")
@@ -78,7 +75,7 @@ export default function ProjectMgmtPage() {
   }
 
   async function createProject(){
-    const response = await fetch(`http://127.0.0.1:5000/createProject/${projName}`, {
+    const response = await fetch(`http://127.0.0.1:5000/createProject/${projName}/${user}`, {
       mode: 'cors',
       method: 'GET',
       headers: {
@@ -94,7 +91,7 @@ export default function ProjectMgmtPage() {
   }
 
   async function joinProject(){
-    const response = await fetch(`http://127.0.0.1:5000/joinProject/${joinProjName}`, {
+    const response = await fetch(`http://127.0.0.1:5000/joinProject/${joinProjName}/${user}`, {
       mode: 'cors',
       method: 'GET',
       headers: {

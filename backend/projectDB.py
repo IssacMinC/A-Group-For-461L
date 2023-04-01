@@ -24,13 +24,12 @@ def index():
 @app.route('/signup/<username>/<password>', methods=['POST'])
 def addNewUser(username, password):
     
-
     # clientLink = MongoClient("mongodb+srv://test:2cinKpO1locYEb76@cluster1.wjept6s.mongodb.net/?retryWrites=true&w=majority", tlsCAfile=ca)
     client = MongoClient(clientLink, tlsCAfile=ca)
     db = client["User"]
     collection_name = db["Users"]
 
-    checkExistingUser = collection_name.find_one({"userId": username})
+    checkExistingUser = collection_name.find_one({"UserId": username})
 
     if checkExistingUser:
         response = jsonify({'msg': 'User Already Exists'})
@@ -74,14 +73,20 @@ def login(username, password):
         response.headers.set('Access-Control-Allow-Origin', '*')
         return response
 
-@app.route('/createProject/<projectID>', methods=['GET'])
-def createProject(projectID):
+@app.route('/createProject/<projectID>/<userID>', methods=['GET'])
+def createProject(projectID, userID):
     client = MongoClient(clientLink, tlsCAfile=ca)
     db = client["Project"]
     col = db["Projects"]
+    dbUser = client["User"]
+    colUser = dbUser["Users"]
+    
     check = col.find_one({"projectID":projectID})
     if check == None:
-        doc = {"projectID":projectID,"HWSet1":0, "HWSet2":0}
+        doc = {"projectID":projectID,"HWSet1":0, "HWSet2":0, "authUsers":[userID]}
+        queryUser = {"UserId":userID}   
+        newUserVal = {"$push":{"ProjectID":projectID}}   
+        colUser.update_one(queryUser, newUserVal)
         col.insert_one(doc)
         client.close()
         return {"msg": "created project"}
@@ -89,16 +94,30 @@ def createProject(projectID):
         client.close()
         return {"msg": "already existing project"}
 
-@app.route('/joinProject/<projectID>', methods=['GET'])
-def joinProject(projectID):
+@app.route('/joinProject/<projectID>/<userID>', methods=['GET'])
+def joinProject(projectID, userID):
     client = MongoClient(clientLink, tlsCAfile=ca)
     db = client["Project"]
     col = db["Projects"]
+    dbUser = client["User"]
+    colUser = dbUser["Users"]
+    
     check = col.find_one({"projectID":projectID})
     if check == None:
         client.close()
         return {"msg": "project not found"}
     else:
+        checkUser = colUser.find_one({"UserId":userID})
+        if((checkUser["ProjectID"] == None) or (projectID not in checkUser["ProjectID"])):
+            queryUser = {"UserId":userID}   
+            newUserVal = {"$push":{"ProjectID":projectID}}   
+            colUser.update_one(queryUser, newUserVal)
+
+        if (userID not in check["authUsers"]):
+            query = {"projectID": projectID}
+            newVal = {"$push": { "authUsers": userID}}
+            col.update_one(query, newVal)
+        
         client.close()
         return {"msg": "joined " + projectID }
 
