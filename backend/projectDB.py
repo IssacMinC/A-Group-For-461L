@@ -74,14 +74,14 @@ def login(username, password):
         response.headers.set('Access-Control-Allow-Origin', '*')
         return response
 
-@app.route('/createProject/<projectID>', methods=['GET'])
-def createProject(projectID):
+@app.route('/createProject/<projectID>/<usedID>', methods=['GET'])
+def createProject(projectID, userID):
     client = MongoClient(clientLink, tlsCAfile=ca)
     db = client["Project"]
     col = db["Projects"]
     check = col.find_one({"projectID":projectID})
     if check == None:
-        doc = {"projectID":projectID,"HWSet1":0, "HWSet2":0}
+        doc = {"projectID":projectID,"HWSet1":0, "HWSet2":0, "authUsers":[userID]}
         col.insert_one(doc)
         client.close()
         return {"msg": "created project"}
@@ -89,8 +89,8 @@ def createProject(projectID):
         client.close()
         return {"msg": "already existing project"}
 
-@app.route('/joinProject/<projectID>', methods=['GET'])
-def joinProject(projectID):
+@app.route('/joinProject/<projectID>/<userID>', methods=['GET'])
+def joinProject(projectID, userID):
     client = MongoClient(clientLink, tlsCAfile=ca)
     db = client["Project"]
     col = db["Projects"]
@@ -99,6 +99,9 @@ def joinProject(projectID):
         client.close()
         return {"msg": "project not found"}
     else:
+        query = {"projectID": projectID}
+        newVal = {"$push": { "authUsers": userID}}
+        col.update_one(query, newVal)
         client.close()
         return {"msg": "joined " + projectID }
 
