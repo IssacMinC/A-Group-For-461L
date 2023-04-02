@@ -52,7 +52,7 @@ function HWSet(props){
     return(
         <div className={'HWsep ' + props.hwset}>
                 <div className='space-cap'>
-                    {props.hwset}: {props.ava}/{props.max}  
+                    {props.hwset}: {props.ava}  
                 </div> 
                 <span className='space-text'>
                     <TextField onChange={textOnChange} className='tf' variant='standard' size='small' placeholder='Enter qty'/>
