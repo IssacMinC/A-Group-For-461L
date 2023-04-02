@@ -11,11 +11,12 @@ Localhost Windows Instructions:<br />
   
   Launching backend:<br />
     1. Navigate to /A-Group-For-461L/backend in terminal<br />
-    2. CTRL+SHIFT+P to select python interpreter, select your choice<br />
-    3. CTRL+SHIFT+P to select python environment, select your choice<br />
+    2. (Windows) CTRL+SHIFT+P to select python interpreter, select your choice <br />
+    3. (Windows) CTRL+SHIFT+P to select python environment, select your choice (on Windows)<br />
     4. Ensure dependencies are fulfilled : pymongo, certifi, flask, flask_cors<br />
     5. To install dependency do `py -m pip install {dependency}`<br />
-    6. Enter `py -m flask --app projectDB run` in terminal<br />
+    6. (Windows) Enter `py -m flask --app projectDB run` in terminal <br />
+    6. (Mac) Enter `export FLASK_APP=projectDB.py` then `python3 -m flask run` in terminal <br />
     7. Backend should start running on port 5000<br />
     
   Once backend is launched, frontend will become fully functional<br />
