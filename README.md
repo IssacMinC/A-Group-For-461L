@@ -2,7 +2,7 @@
 Repo for 461L
 
 
-Localhost Windows Instructions:<br />
+Localhost Instructions:<br />
   Use VSCode for all projects.<br />
   Launching frontend:<br />
     1. Navigate to /A-Group-For-461L/teamproject in terminal<br />
